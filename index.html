@@ -19,6 +19,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/Draggable-latest-beta.js" charset="utf-8"></script>
     <script src="https://.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+
+    <script src="https://cdn.babylonjs.com/babylon.js" charset="utf-8"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js" charset="utf-8"></script>
+    <script src='node_modules/frosted-glass/dist/frostedglass.js'></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.11/paper-full.min.js" charset="utf-8"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
     <!-- <scriptsrc="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script> -->
@@ -26,6 +32,7 @@
     <script src="plugins/easingScript.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r99/three.min.js"></script>
     <script src="plugins/GLTFLoader.js"></script>
+    <script src="curtain.min.js" charset="utf-8"></script>
     <script src="plugins/OrbitControls.js"></script>
     <script src="plugins/hdri.js"></script>
     <script src='plugins/RGBELoader.js'></script>
@@ -48,23 +55,44 @@
       position: relative;
     }
     #mainCanvas{
+
       display: none;
-      width: 100%;
+      width: 100vw;
       height: 100%;
       position: absolute;
+      top: 0;
+      background: transparent;
+      z-index: 1;
+    }
+    #gradientCanvas{
+
+      /* display: none; */
+      width: 100vw;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      background: transparent;
+      z-index: 0;
     }
     #threeCanvas{
-      display: none;
+      /* display: none; */
       width: 100%;
       height: 100%;
       position: absolute;
       z-index: -10
+    }
+    #time-container{
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+
     }
 
 
   </style>
   <!-- player style -->
   <style>
+
             /*
             1. Base
           */
@@ -75,13 +103,13 @@
           div#amplitude-player {
             /* background: #FFFFFF; */
             background: rgba(#ffffff, 0);
-            box-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.1); */
             margin: auto;
             margin-top: 20px;
             margin-bottom: 20px;
             display: flex;
             max-width: 900px ;
-            width: 30%;
+            width: 50%;
             flex-direction: column;
            }
 
@@ -111,7 +139,15 @@
             div#amplitude-left div#player-left-bottom {
               flex: 1;
               background-color: #F1F1F1;
-              padding: 20px 10px; }
+              padding: 20px 10px;
+              flex: 1;
+              width: 50%;
+              border-radius: 26px;
+              margin: auto;
+              background-color: #F1F1F1;
+              padding: 20px 10px;
+
+            }
               div#amplitude-left div#player-left-bottom div#volume-container:after {
                 content: "";
                 display: table;
@@ -129,42 +165,71 @@
             overflow-y: scroll;
             /* width: 50%; */
             display: flex;
-            flex-direction: column; }
-            div#amplitude-right div.song {
+            flex-direction: column;
+
+           }
+            /* div#amplitude-right div.song { */
+            div.song {
               cursor: pointer;
-              padding: 10px; }
-              div#amplitude-right div.song div.song-now-playing-icon-container {
+              display: flex;
+              padding: 4px;
+              /* padding: 10px; */
+              border-top: 2px solid rgba(225, 225, 225, 0.2);
+              border-left: 1px solid rgba(225, 225, 225, 0.1);
+              border-right: 1px solid rgba(225, 225, 225, 0.3);
+              box-shadow: white 0px 30px 40px -2em inset;
+              0 1px 2px #fff, /*bottom external highlight*/
+              0 -1px 1px #666, /*top external shadow*/
+              inset 0 -1px 1px rgba(0,0,0,0.5), /*bottom internal shadow*/
+              inset 0 1px 1px rgba(255,255,255,0.8); /*top internal highlight*/
+              z-index: 2;
+              border-radius: 50px;
+            }
+            div.song span.song-artist a{
+              color: #b775ff;
+            }
+            a.song-title::after{
+              content:' - '
+            }
+          div.song div.song-now-playing-icon-container {
                 float: left;
                 width: 20px;
                 height: 20px;
                 margin-right: 10px; }
-                div#amplitude-right div.song div.song-now-playing-icon-container img.now-playing {
+             div.song div.song-now-playing-icon-container img.now-playing {
                   display: none;
                   margin-top: 15px; }
-              div#amplitude-right div.song div.play-button-container {
+            div.song div.play-button-container {
                 display: none;
                 background: url("https://521dimensions.com/img/open-source/amplitudejs/blue-player/list-play-light.png") no-repeat;
                 width: 22px;
                 height: 22px;
                 margin-top: 10px; }
-              div#amplitude-right div.song div.play-button-container:hover {
+            div.song div.play-button-container:hover {
                 background: url("https://521dimensions.com/img/open-source/amplitudejs/blue-player/list-play-hover.png") no-repeat; }
-              div#amplitude-right div.song.amplitude-active-song-container div.song-now-playing-icon-container img.now-playing {
+            div.song.amplitude-active-song-container div.song-now-playing-icon-container img.now-playing {
                 display: block; }
-              div#amplitude-right div.song.amplitude-active-song-container:hover div.play-button-container {
+           div.song.amplitude-active-song-container:hover div.play-button-container {
                 display: none; }
-              div#amplitude-right div.song div.song-meta-data {
+           div.song div.song-meta-data {
                 float: left;
-                width: calc( 100% - 110px ); }
-                div#amplitude-right div.song div.song-meta-data span.song-title {
+                padding-top: 10px;
+                width: calc( 100% - 110px );
+                display: flex;
+              }
+           div.song div.song-meta-data span.song-title {
                   color: #272726;
                   font-size: 16px;
                   display: block;
                   font-weight: 300;
                   white-space: nowrap;
                   overflow: hidden;
-                  text-overflow: ellipsis; }
-                div#amplitude-right div.song div.song-meta-data span.song-artist {
+                  text-overflow: ellipsis;
+                }
+          div.song div.song-meta-data span.song-title::after{
+                  content: ' - ';
+                }
+          div.song div.song-meta-data span.song-artist {
                   color: #607D8B;
                   font-size: 14px;
                   font-weight: bold;
@@ -173,15 +238,15 @@
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis; }
-              div#amplitude-right div.song img.bandcamp-grey {
+           div.song img.bandcamp-grey {
                 float: left;
                 display: block;
                 margin-top: 10px; }
-              div#amplitude-right div.song img.bandcamp-white {
+             div.song img.bandcamp-white {
                 float: left;
                 display: none;
                 margin-top: 10px; }
-              div#amplitude-right div.song span.song-duration {
+            div.song span.song-duration {
                 float: left;
                 width: 55px;
                 text-align: center;
@@ -189,7 +254,7 @@
                 color: #607D8B;
                 font-size: 16px;
                 font-weight: 500; }
-            div#amplitude-right div.song:after {
+           div.song:after {
               content: "";
               display: table;
               clear: both; }
@@ -199,11 +264,15 @@
             div#amplitude-player div#amplitude-right {
               width: 100%; } }
           div#progress-container {
-            width: 70%;
+            /* width: 70%; */
             float: left;
             position: relative;
             height: 20px;
             cursor: pointer;
+            width: 100%;
+            background-color: pink;
+            /* position: absolute; */
+
             /*
               IE 11
             */ }
@@ -291,25 +360,31 @@
                 color: #78909C;
                 border: none; } }
             div#progress-container input[type=range] {
-              -webkit-appearance: none;
-              width: 100%;
-              margin: 7.5px 0;
-              position: absolute;
-              z-index: 9999;
-              top: -7px;
-              height: 20px;
-              cursor: pointer;
-              background-color: inherit; }
+
+                  -webkit-appearance: none;
+                  width: 100vw;
+                  margin: 7.5px 0;
+                  position: absolute;
+                  z-index: 9999;
+                  top: -7px;
+                  /* height: 64px; */
+                  height: 18px;
+                  cursor: pointer;
+                  background-color: inherit;
+
+            }
             div#progress-container input[type=range]:focus {
               outline: none; }
             div#progress-container input[type=range]::-webkit-slider-runnable-track {
               width: 100%;
               height: 0px;
+              /* height: 10px; */
               cursor: pointer;
               box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
               background: #0075a9;
               border-radius: 0px;
-              border: 0px solid #010101; }
+              border: 0px solid #010101;
+             }
             div#progress-container input[type=range]::-webkit-slider-thumb {
               box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
               border: 1px solid #00a0ff;
@@ -395,11 +470,19 @@
 
           div#control-container {
             margin-top: 25px;
-            margin-top: 20px; }
+            margin-top: 20px;
+            background-color: red;
+            display: flex;
+            /* flex-direction: column; */
+
+          }
             div#control-container div#repeat-container {
               width: 25%;
               float: left;
-              padding-top: 20px; }
+              padding-top: 20px;
+             margin: auto;
+             }
+
               div#control-container div#repeat-container div#repeat {
                 width: 24px;
                 height: 19px;
@@ -422,7 +505,7 @@
                 margin-top: 40px;
                 float: none; } }
             div#control-container div#central-control-container {
-              width: 50%;
+              /* width: 50%; */
               float: left; }
               div#control-container div#central-control-container div#central-controls {
                 width: 130px;
@@ -629,7 +712,10 @@
             font-weight: 700;
             float: left;
             width: 15%;
-            text-align: center; }
+            text-align: center;
+            position: absolute;
+            left: 10;
+          }
           div#time-container span.duration {
             color: #607D8B;
             font-size: 14px;
@@ -662,7 +748,11 @@
               font-family: 'Open Sans', sans-serif;
               white-space: nowrap;
               overflow: hidden;
-              text-overflow: ellipsis; }
+              text-overflow: ellipsis;
+              display: flex;
+              justify-content: center;
+
+            }
               div#meta-container div.song-artist-album span {
                 display: block; }
 
@@ -670,14 +760,16 @@
             3. Layout
           */
           body {
-            background-image: -webkit-linear-gradient(316deg, #3BD2AE 0%, #36BAC2 100%);
-            background-image: linear-gradient(-226deg, #3BD2AE 0%, #36BAC2 100%);
+            /* background-image: -webkit-linear-gradient(316deg, #3BD2AE 0%, #36BAC2 100%); */
+            /* background-image: linear-gradient(-226deg, #3BD2AE 0%, #36BAC2 100%);
+             */
             height: 100vh;
             -webkit-font-smoothing: antialiased;
             font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
             line-height: 1.5; }
           div.amplitude-wave-form{
               margin-top: -14px;
+              display: none;
           }
 
            div.amplitude-wave-form svg{
@@ -720,7 +812,9 @@
   <!-- MY CUSTOM CLASSES -->
   <style>
     .myGradientFill{
-          background: linear-gradient(270deg, #ff0000, #e1fb0f, #a958bb);
+          /* background: linear-gradient(270deg, #ff0000, #e1fb0f, #a958bb); */
+          background: linear-gradient(270deg, rgba(255, 0, 246, 0.45), rgba(196, 204, 110, 0.36), rgba(138, 82, 246, 0.51));
+          background-blend-mode: darken;
           background-size: 600% 600%;
           -webkit-animation: AnimationName 30s ease infinite;
           -moz-animation: AnimationName 30s ease infinite;
@@ -742,94 +836,151 @@
           50%{background-position:100% 50%}
           100%{background-position:0% 50%}
       }
-    
+
     .myAlbumArtClass{
       max-width: 200px;
     }
+    #nextButton{
+      position: fixed;
+      height: 80px;
+      width: 80px;
+      right: 10;
+      top: 50%;
+      background-color: black;
+      z-index: 2;
+    }
+    #prevButton{
+      position: fixed;
+      height: 80px;
+      width: 80px;
+      left: 10;
+      top: 50%;
+      background-color: black;
+      z-index: 2;
+    }
+    #player-left-bottom{
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+    .albumSceneContainer{
+      width: 100vw;
+      height: 100vh;
+      background-color: red;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .albumPlaylistContainer{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50vw;
+      height: 50vh;
+      margin: auto;
+      z-index: 5;
+    }
+
+    #allPlaylistsContainer{
+      width: 400vw;
+      display: flex;
+      /* display: none; */
+      justify-content: space-between;
+
+    }
+    #logoHolder{
+      position: fixed;
+      top:0;
+      width: 100px;
+      height: 100px;
+      z-index: 5;
+    }
+    #logoHolder img{
+      width: 100%;
+    }
+    .playlistTexture{
+      display: none;
+
+    .playlistNav{
+      z-index: 106
+    }
+
   </style>
 
   <body>
-    <div id="mainBodyDiv">
+  <div id="logoHolder">
+    <img src="logo.png" alt="">
+  </div>
+  <div id="mainBodyDiv">
+      <div id="nextButton" class = 'playListNav' onclick = 'switchPlaylist(this)'></div>
+      <div id="prevButton" class = 'playListNav' onclick = 'switchPlaylist(this)'></div>
+
+      <div id="allPlaylistsContainer"></div>
         <canvas id="mainCanvas">
+        </canvas>
+        <canvas id="gradientCanvas">
         </canvas>
         <canvas id="threeCanvas">
 
         </canvas>
         <!-- Blue Playlist Container -->
         <img data-amplitude-song-info="cover_art_url" class="myAlbumArtClass"/>
-
-        <div id="blue-playlist-container">
-
-            <!-- Amplitude Player -->
-          <div id="amplitude-player">
-
-                <!-- Left Side Player -->
+        <!-- <div id="allPlaylistsContainer"> -->
+          <div id="blue-playlist-container">
+            <div id="amplitude-player">
                 <div id="amplitude-left">
+                    <div class="amplitude-visualization" id="large-visualization"></div>
+                </div>
 
-          <div class="amplitude-visualization" id="large-visualization">
+                <!-- <div id="amplitude-right"></div> -->
+                <!-- End Right Side Player -->
+          </div>
+        </div>
+        <!-- CONTROLS -->
+        <div id="player-left-bottom">
+          <div id="time-container">
 
-            </div>
-                    <div id="player-left-bottom">
-                        <div id="time-container">
-                            <span class="current-time">
-                                <span class="amplitude-current-minutes" ></span>:<span class="amplitude-current-seconds"></span>
-                            </span>
-                            <div id="progress-container">
-                                <div class="amplitude-wave-form">
+                <div id="control-container">
+                    <div id="repeat-container">
+                        <div class="amplitude-repeat" id="repeat" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                        <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                    </div>
 
-                        </div>
-                <input type="range" class="amplitude-song-slider"/>
-                                <progress id="song-played-progress" class="amplitude-song-played-progress"></progress>
-                                <progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0"></progress>
-                            </div>
-                            <span class="duration">
-                                <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
-                            </span>
-                        </div>
-
-                        <div id="control-container">
-                            <div id="repeat-container">
-                                <div class="amplitude-repeat" id="repeat"></div>
-                                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle"></div>
-                            </div>
-
-                            <div id="central-control-container">
-                                <div id="central-controls">
-                                    <div class="amplitude-prev" id="previous"></div>
-                                    <div class="amplitude-play-pause" id="play-pause"></div>
-                                    <div class="amplitude-next" id="next"></div>
-                                </div>
-                            </div>
-
-                            <div id="volume-container">
-                                <div class="volume-controls">
-                                    <div class="amplitude-mute amplitude-not-muted"></div>
-                                    <input type="range" class="amplitude-volume-slider"/>
-                                    <div class="ms-range-fix"></div>
-                                </div>
-                                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right"></div>
-                            </div>
-                        </div>
-
-                        <div id="meta-container">
-                            <span data-amplitude-song-info="name" class="song-name"></span>
-
-                            <div class="song-artist-album">
-                                <span data-amplitude-song-info="artist"></span>
-                                <span data-amplitude-song-info="album"></span>
-                            </div>
+                    <div id="central-control-container">
+                        <div id="central-controls">
+                            <div class="amplitude-prev" id="previous" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                            <div class="amplitude-play-pause" id="play-pause" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                            <div class="amplitude-next" id="next" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
                         </div>
                     </div>
-                </div>
-                <!-- End Left Side Player -->
 
-                <!-- Right Side Player -->
-                <div id="amplitude-right">
+                    <div id="volume-container">
+                        <div class="volume-controls">
+                            <div class="amplitude-mute amplitude-not-muted" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                            <input type="range" class="amplitude-volume-slider" data-amplitude-playlist='WEIRD NXC - ACT 1'/>
+                            <div class="ms-range-fix"></div>
+                        </div>
+                        <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                    </div>
                 </div>
-                <!-- End Right Side Player -->
+                <!-- <span class="current-time">
+                    <span class="amplitude-current-minutes" ></span>:<span class="amplitude-current-seconds"></span>
+                </span> -->
+              <div id="progress-container">
+                  <div class="amplitude-wave-form" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                  <input type="range" class="amplitude-song-slider " data-amplitude-playlist='WEIRD NXC - ACT 1'/>
+                    <progress id="song-played-progress" class="amplitude-song-played-progress" data-amplitude-playlist='WEIRD NXC - ACT 1'></progress>
+                    <progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0" data-amplitude-playlist='WEIRD NXC - ACT 1'></progress>
+                </div>
+                <!-- <span class="duration"> -->
+                    <!-- <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span> -->
+                <!-- </span> -->
             </div>
-            <!-- End Amplitdue Player -->
-    </div>
+
+
+
+        </div>
       <!-- PAPER.JS SCRIPT -->
       <script>
         // var path;
@@ -916,8 +1067,189 @@
         //
         //   	}
       </script>
-
       <!-- Player script  -->
+      <script>
+        // window.addEventListener("load", function() {
+        //   var mouse = {
+        //     position: {
+        //       x: 0,
+        //       y: 0
+        //     },
+        //     prevPosition: {
+        //       x: 0,
+        //       y: 0
+        //     },
+        //     velocity: 0
+        //   };
+        //
+        //   function lerp (start, end, amount){
+        //     return (1 - amount) * start + amount * end;
+        //   }
+        //
+        //   // set up our WebGL context and append the canvas to our wrapper
+        //   var webGLCurtain = new Curtains({
+        //     container: "canvas",
+        //     antialias: false, // render targets will disable default antialiasing anyway
+        //   });
+        //
+        //   webGLCurtain.onRender(function() {
+        //     // update our planes deformation
+        //     // increase/decrease the effect
+        //     planesDeformations = lerp(planesDeformations, 0, 0.02);
+        //   }).onScroll(function() {
+        //     // get scroll deltas to apply the effect on scroll
+        //     var delta = webGLCurtain.getScrollDeltas();
+        //
+        //     // invert value for the effect
+        //     delta.y = -delta.y;
+        //
+        //     // threshold
+        //     if(delta.y > 30) {
+        //       delta.y = 30;
+        //     }
+        //     else if(delta.y < -30) {
+        //       delta.y = -30;
+        //     }
+        //
+        //     if(Math.abs(delta.y) > Math.abs(planesDeformations)) {
+        //       planesDeformations = lerp(planesDeformations, delta.y, 0.5);
+        //     }
+        //   }).onError(function() {
+        //     // we will add a class to the document body to display original images
+        //     document.body.classList.add("no-curtains", "planes-loaded");
+        //   }).onContextLost(function() {
+        //     // on context lost, try to restore the context
+        //     webGLCurtain.restoreContext();
+        //   });
+        //
+        //   // we will keep track of all our planes in an array
+        //   var planes = [];
+        //   var planesDeformations = 0;
+        //
+        //   // get our planes elements
+        //   var planeElements = document.getElementsByClassName("plane");
+        //
+        //
+        //   // all planes will have the same parameters
+        //   var params = {
+        //     vertexShaderID: "plane-vs", // our vertex shader ID
+        //     fragmentShaderID: "plane-fs", // our fragment shader ID
+        //     shareProgram: true, // share planes program to improve plane creation speed
+        //     widthSegments: 10,
+        //     heightSegments: 10,
+        //     drawCheckMargins: {
+        //       top: 100,
+        //       right: 0,
+        //       bottom: 100,
+        //       left: 0,
+        //     },
+        //     uniforms: {
+        //       mousePosition: {
+        //         name: "uMousePosition",
+        //         type: "2f",
+        //         value: [mouse.position.x, mouse.position.y]
+        //       },
+        //       mouseVelocity: {
+        //         name: "uMouseVelocity",
+        //         type: "1f",
+        //         value: mouse.velocity
+        //       },
+        //       planeDeformation: {
+        //         name: "uPlaneDeformation",
+        //         type: "1f",
+        //         value: 0,
+        //       },
+        //     }
+        //   };
+        //
+        //   // add our planes and handle them
+        //   for(var i = 0; i < planeElements.length; i++) {
+        //     planes.push(webGLCurtain.addPlane(planeElements[i], params));
+        //
+        //     handlePlanes(i);
+        //   }
+        //
+        //
+        //   // handle all the planes
+        //   function handlePlanes(index) {
+        //     var plane = planes[index];
+        //
+        //     // check if our plane is defined and use it
+        //     plane && plane.onLoading(function() {
+        //       //console.log(plane.loadingManager.sourcesLoaded);
+        //     }).onReady(function() {
+        //       // once everything is ready, display everything
+        //       if(index === planes.length - 1) {
+        //         document.body.classList.add("planes-loaded");
+        //       }
+        //
+        //       window.addEventListener("mousemove", function(e) {
+        //         onMouseMove(e, plane);
+        //       });
+        //
+        //       window.addEventListener("touchmove", function(e) {
+        //         onMouseMove(e, plane);
+        //       });
+        //     }).onRender(function() {
+        //       // update the uniform
+        //       plane.uniforms.planeDeformation.value = planesDeformations;
+        //     });
+        //   }
+        //
+        //   function onMouseMove(e, plane) {
+        //     mouse.prevPosition.x = mouse.position.x;
+        //     mouse.prevPosition.y = mouse.position.y;
+        //
+        //     if(e.targetTouches) {
+        //       mouse.position.x = e.targetTouches[0].clientX;
+        //       mouse.position.y = e.targetTouches[0].clientY;
+        //     }
+        //     else {
+        //       mouse.position.x = e.clientX;
+        //       mouse.position.y = e.clientY;
+        //     }
+        //
+        //     mouse.velocity.x = mouse.prevPosition.x - mouse.position.x;
+        //     mouse.velocity.y = mouse.prevPosition.y - mouse.position.y;
+        //
+        //     // convert our mouse/touch position to coordinates relative to the vertices of the plane
+        //     var mouseCoords = plane.mouseToPlaneCoords(mouse.position.x, mouse.position.y);
+        //
+        //     // update uniform
+        //     plane.uniforms.mousePosition.value = [mouseCoords.x, mouseCoords.y];
+        //     plane.uniforms.mouseVelocity.value = [mouse.velocity.x, mouse.velocity.y];
+        //   }
+        //
+        //   var shaderPassParams = {
+        //     fragmentShaderID: "shaderpass-fs", // we'll be using the lib default vertex shader
+        //     uniforms: {
+        //       timer: {
+        //         name: "uTimer",
+        //         type: "1f",
+        //         value: 0,
+        //       },
+        //       displacement: {
+        //         name: "uDisplacement",
+        //         type: "1f",
+        //         value: 0,
+        //       },
+        //     },
+        //   };
+        //
+        //   var shaderPass = webGLCurtain.addShaderPass(shaderPassParams);
+        //
+        //   // if our shader pass has been successfully created
+        //   if(shaderPass) {
+        //     shaderPass.onReady(function() {
+        //       console.log("shader pass is ready");
+        //     }).onRender(function() {
+        //       // update the uniforms
+        //       shaderPass.uniforms.timer.value++;
+        //       shaderPass.uniforms.displacement.value = planesDeformations / 5;
+        //     });
+        //   }
+        //   });
+      </script>
       <script>
 
           /*
@@ -928,23 +1260,124 @@
           // document.getElementById('large-visualization').style.height = document.getElementById('album-art').offsetWidth + 'px';
         // var realSongObjs = [];
         var songHTMLSections = [];
+        var albumPlaylists = [];
         var playlistContainer = document.getElementById('amplitude-right')
         var songDataObjs;
         var amplitudeDataObjs;
+        var rawJSON;
+        var headerNames;
+        var headerCells;
+        var cells;
+        var currentPlayListIndex = 0;
+        var albumObjs;
+
         const songDataSheetURL = 'https://spreadsheets.google.com/feeds/cells/1A5fo1IWGw-XkjIqPXYb7sZfPvDIYMOv-vOwawq14ARo/1/public/full?alt=json'
 
         var songDataObjs = generateObjectFromSpreadData(songDataSheetURL).then(function(returnData){
-            console.log(returnData)
             songDataObjs = returnData;
-            amplitudeDataObjs = generateAmpltiudeDataObjArray(songDataObjs)
-            console.log(amplitudeDataObjs);
-            generatePlaylist();
+            let albumNameColumn = getAllValuesInColumn(headerCells, cells, 'album', true)
+            let uniqueAlbumNames = albumNameColumn.filter(onlyUnique)
+            let testName = uniqueAlbumNames[0]
+            let testGroup = groupBy(songDataObjs, obj => obj.album)
+            albumObjs =  makeAlbumObjs(testGroup, document.querySelector('#allPlaylistsContainer'))
+            amplitudeDataObjs = generateAmpltiudeDataObjArray(albumObjs)
+            console.log(JSON.stringify(amplitudeDataObjs));
             testTest(amplitudeDataObjs)
-          // console.log('got data!');
+            // console.log('AMPLITUDEDATAOBJS', amplitudeDataObjs)
+            // testTest(amplitudeDataObjs)
+            // Amplitude.init(amplitudeDataObjs)
 
         });
 
-        console.log('SONGDATAOBJS', songDataObjs)
+        function switchPlaylist(e){
+          console.log('CLIKED ID', e.id);
+          if (e.id === 'nextButton') {
+            currentPlayListIndex++;
+          } else {
+            currentPlayListIndex--;
+          }
+          currentAlbumObj = albumObjs[currentPlayListIndex]
+          // toScrollTo = currentAlbumObj.albumSceneContainer.
+          toScrollTo = albumObjs[currentPlayListIndex].albumPlaylistContainer
+          // console.log('TOSCROLLTO', toScrollTo)
+          // $('.leftArrow').click(function(event){
+            // event.preventDefault();
+          // $('#allPlaylistsContainer').animate({scrollLeft:'+=1500'},500);
+
+          // console.log(currentPlayListIndex);
+            $('body').scrollTo(toScrollTo, 500, {
+              axis: 'x',
+              margin: true
+          })
+        }
+
+        function groupBy(list, keyGetter) {
+            const map = new Map();
+            list.forEach((item) => {
+                 const key = keyGetter(item);
+                 const collection = map.get(key);
+                 if (!collection) {
+                     map.set(key, [item]);
+                 } else {
+                     collection.push(item);
+                 }
+            });
+            return map;
+        }
+
+        function makeAlbumObjs(mapGroup, parentElem){
+          let array = Array.from(mapGroup)
+          let groupObjArray = []
+
+
+          for (var i = 0; i < array.length; i++) {
+            let curTempAlbumData = array[i]
+            let albumSceneContainer = createClassIdAppend(parentElem, 'div', 'albumSceneContainer', 'albumSceneContainer_'+i)
+            let playlistContainer = createClassIdAppend(albumSceneContainer, 'div', 'albumPlaylistContainer amplitudeRight', 'albumPlaylistContainer_'+i)
+            // let playlistTexture = createClassIdAppend(playlistContainer, 'img', 'playlistTexture')
+            // setElemAttribute(playlistTexture, 'src', 'data/textures/glasstexture1.png')
+            let albumPlaylist = generatePlaylist(playlistContainer, curTempAlbumData)
+            // let randomColor = getRandomColor()
+            let randomColor2 = getRandomColor()
+            $(playlistContainer).css('background-color', 'rgba(255, 255, 255, 0)')
+            $(albumSceneContainer).css('background-color', randomColor2)
+
+            let albumObj = {
+              'albumName': curTempAlbumData[0],
+              'albumSongObjs': curTempAlbumData[1],
+              'albumSceneContainer': albumSceneContainer,
+              'albumPlaylistContainer': playlistContainer
+            }
+            groupObjArray.push(albumObj)
+          }
+          return groupObjArray
+        }
+
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+
+        function getAllValuesInColumn(theHeaderCells, theSheetCeels, columnName, ignoreHeader){
+          var desiredHeaderCell = theHeaderCells.filter(obj => {
+              return obj.content.$t  === columnName
+          })
+          let headerColumnName = desiredHeaderCell[0].gs$cell.col
+          let columnCells = theSheetCeels.filter(test => {
+              return test.gs$cell.col  === headerColumnName
+          })
+          let desiredColumnValues = columnCells.map(a=>a.content.$t)
+
+          if (ignoreHeader == true) {
+            desiredColumnValues.shift()
+          }
+          return desiredColumnValues;
+        }
+
+        function sortObjectsBasedOnValue(){
+          let key = onlyUnique()
+        }
+
+        // console.log('SONGDATAOBJS', songDataObjs)
         // cl
         function makeSongContainer(parentElem, index) {
           let songContainer = createClassIdAppend(parentElem, 'div', "song amplitude-song-container amplitude-play-pause", 'songContainer_'+index)
@@ -953,7 +1386,8 @@
           let nowPlaying = createClassIdAppend(songNowPlayingIconContainer, 'img', 'now-playing', 'nowPlaying_'+index)
 
           let songMetaData = createClassIdAppend(songContainer, 'div', 'song-meta-data', 'songMetaData_'+index)
-          let songTitle = createClassIdAppend(songMetaData, 'span', 'song-title', 'songTitle_'+index)
+          // let songTitle = createClassIdAppend(songMetaData, 'span', 'song-title', 'songTitle_'+index)
+          let songTitle = createClassIdAppend(songMetaData, 'a', 'song-title', 'songTitle_'+index)
           let songArist = createClassIdAppend(songMetaData, 'span', 'song-artist', 'songArist_'+index)
 
           let bandcampLink = createClassIdAppend(songContainer, 'a', 'bandcamp-link', 'bandcampLink_'+index)
@@ -978,22 +1412,79 @@
           return songContainerObj;
         }
 
-        function generateAmpltiudeDataObjArray(googleSheetDataObjs){
-          let amplitudeDataObjArray = []
-          for (var i = 0; i < googleSheetDataObjs.length; i++) {
-             let curGSDO = googleSheetDataObjs[i]
-             let ampDO = {
-               'name': curGSDO.name,
-               'artist': curGSDO.artist,
-               'album': curGSDO.album,
-               'url': curGSDO.url,
-               'cover_art_url': curGSDO.cover_art_url
-             }
-             amplitudeDataObjArray.push(ampDO)
-           }
-
-         return amplitudeDataObjArray;
+        function generateSongURLString(dObj, songIndex, albumNum){
+          let songNum = leadingZero(songIndex)
+          let artistName = generateArtistText(dObj)
+          let dash = '-'
+          let songName = ([songNum, artistName, dash, dObj.name].join(' '))+'.mp3'
+          let albumFolder = 'album'+albumNum
+          let songAddress = ['data', albumFolder, songName].join('/')
+          let encoded = encodeURI(songAddress)
+          return encoded
         }
+
+        function generateArtistText(dObj){
+          let artistNameString
+          if (dObj.collab_symbol !== 'NA') {
+            artistNameString = [dObj.artist1, dObj.collab_symbol, dObj.artist2].join(' ')
+          } else {
+            artistNameString = dObj.artist1
+          }
+          return artistNameString
+        }
+
+        function leadingZero(num){
+          numPlus = num+1;
+          let formattedNum
+          if(numPlus.toString().length < 2){
+           formattedNum= "0"+numPlus;
+         } else {
+           formattedNum = numPlus
+         }
+         return formattedNum
+        }
+        // /data/album0/04%20「%20P%20H%20Y%20S%20A%20」-%20w0nd3rful.mp3
+        // 04%20%E3%80%8C%20P%20H%20Y%20S%20A%20%E3%80%8D%20-%20w0nd3rful.mp3
+
+        function generateAmpltiudeDataObjArray(albums){
+          // console.log('ALBUMS', albums)
+         var playListObj = {}
+         let testFinal = {}
+
+          for (var i = 0; i < 1; i++) {
+              let curAlbum = albums[i]
+              let curSongObjs = curAlbum.albumSongObjs
+              let albumSongPlaylist = []
+              for (var j = 0; j < curSongObjs.length; j++) {
+                 let amplitudeDataObjArray = []
+                 let curSong = curSongObjs[j]
+                 let songLocation = generateSongURLString(curSong, j, i)
+                 console.log('SONGLOCATION', songLocation)
+
+                 let ampDO = {
+                   'name': curSong.name,
+                   'artist': generateArtistText(curSong),
+                   'album': curSong.album,
+                   'url': songLocation,
+                   // 'url': 'data/album0/04%20「%20P%20H%20Y%20S%20A%20」-%20w0nd3rful.mp3',
+                   // 'url': 'data/album0/04%20%E3%80%8C%20P%20H%20Y%20S%20A%20%E3%80%8D%20-%20w0nd3rful.mp3',
+                   'cover_art_url': curSong.cover_art_url
+                 }
+                 albumSongPlaylist.push(ampDO)
+               }
+               let songsObj = {
+                 'songs': albumSongPlaylist
+               }
+               playListObj[curAlbum.albumName] = songsObj
+
+               testFinal.playlists = playListObj
+
+           }
+       console.log('TESTFINAL', testFinal)
+          // finalAmplitudeObj.playlists = playListObj
+          return testFinal
+        }
+
 
         function testTest(dataObjs){
           let bandcampLinks = document.getElementsByClassName('bandcamp-link');
@@ -1006,18 +1497,18 @@
 
 
           let songElements = document.getElementsByClassName('song');
-          console.log('SONGELEMENTS', songElements)
+          // console.log(songElements);
 
           for( var i = 0; i < songElements.length; i++ ){
-            // console.log(songElements[i]);
-            // console.log(songElements[i]);
-            console.log(i);
             /*
 
                 Ensure that on mouseover, CSS styles don't get messed up for active songs.
             */
             songElements[i].addEventListener('mouseover', function(){
                 // this.style.backgroundColor = '#00A0FF';
+                // console.log(i);
+                    console.log('SONGELEMENTS[I]', songElements[i])
+                // console.log('got hovered');
                 $(this).toggleClass('myGradientFill')
                 this.querySelectorAll('.song-meta-data .song-title')[0].style.color = '#FFFFFF';
                 this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = '#FFFFFF';
@@ -1030,6 +1521,7 @@
                 this.querySelectorAll('img.bandcamp-white')[0].style.display = 'block';
                 this.querySelectorAll('.song-duration')[0].style.color = '#FFFFFF';
             });
+
 
             /*
                 Ensure that on mouseout, CSS styles don't get messed up for active songs.
@@ -1056,45 +1548,33 @@
           /*
             Initializes AmplitudeJS
           */
-          Amplitude.init({
-            'songs': dataObjs,
-            "callbacks": {
-                  'play': function(){
-                      document.getElementById('album-art').style.visibility = 'hidden';
-                      document.getElementById('large-visualization').style.visibility = 'visible';
-                  },
-
-                  'pause': function(){
-                      document.getElementById('album-art').style.visibility = 'visible';
-                      document.getElementById('large-visualization').style.visibility = 'hidden';
-                  }
-              },
-            waveforms: {
-              sample_rate: 50
-            }
-            });
+          Amplitude.init(dataObjs)
           }
 
-        function generatePlaylist() {
-          for (var i = 0; i < songDataObjs.length; i++) {
-            console.log(i);
-            let curSongDataObj = songDataObjs[i]
-            let curSongHTMLObj =  makeSongContainer(playlistContainer,i)
-            console.log('CURSONGHTMLOBJ', curSongHTMLObj)
-
-            setSongHTMLObjContent(curSongHTMLObj, curSongDataObj, i)
-
+        function generatePlaylist(parentElem, albumDataArray) {
+          // console.log(parentElem);
+          let albumSongArray = albumDataArray[1]
+          let albumName = albumDataArray[0]
+          for (var i = 0; i < albumSongArray.length; i++) {
+            let curSongDataObj = albumSongArray[i]
+            let curSongHTMLObj =  makeSongContainer(parentElem,i)
+            setSongHTMLObjContent(curSongHTMLObj, curSongDataObj, i, albumName)
+            songHTMLSections.push(curSongHTMLObj)
           }
         }
 
-        function setSongHTMLObjContent(hObj, dObj, index){
-          // hObj.data-amplitude-song-index = index
+        function setSongHTMLObjContent(hObj, dObj, index, albumName){
+          console.log('ALBUMNAME', albumName)
+
+          // console.log('DOBJ', dObj)
           setElemAttribute(hObj.songContainer, 'data-amplitude-song-index', index)
+          $(hObj.songContainer).attr('data-amplitude-playlist', albumName)
           setElemAttribute(hObj.nowPlaying, 'src', 'https://521dimensions.com/img/open-source/amplitudejs/blue-player/now-playing.svg')
           $(hObj.songContainer).attr('data-amplitude-song-index', index)
-
+          let artistName = generateArtistNameString(dObj)
           setElemAttribute(hObj.songTitle, 'innerHTML', dObj.name)
-          setElemAttribute(hObj.songArist, 'innerHTML', dObj.artist)
+
+          setElemAttribute(hObj.songArist, 'innerHTML', artistName)
           setElemAttribute(hObj.bandcampLink, 'href', dObj.Artist_Link)
           setElemAttribute(hObj.songDuration, 'innerHTML', dObj.Song_Duration)
 
@@ -1104,8 +1584,14 @@
 
         }
 
-        function setElemAttribute(elem, attr, content) {
-          elem[attr] = content
+        function generateArtistNameString(dObj){
+          let artistNameString
+          if (dObj.collab_symbol !== 'NA') {
+            artistNameString = [generateArtistLink(dObj, dObj.artist1, dObj.artist1_Link), dObj.collab_symbol, generateArtistLink(dObj, dObj.artist2, dObj.artist2_Link )].join(' ')
+          } else {
+            artistNameString = generateArtistLink(dObj, dObj.artist1, dObj.artist1_Link)
+          }
+          return artistNameString
         }
 
         function generateObjectFromSpreadData(url) {
@@ -1117,9 +1603,9 @@
             let testProjArray = []
 
             return $.getJSON(url).then(function(data) {
-
-              let cells = data.feed.entry;
-              console.log('CELLS', cells)
+              rawJSON = data;
+              cells = data.feed.entry;
+              // console.log('CELLS', cells)
               let numRows = parseInt(data.feed.gs$rowCount.$t)
               let numCols = parseInt(data.feed.gs$colCount.$t)
               let totalNumCels = numRows * numCols;
@@ -1153,11 +1639,11 @@
                 let curCell = cells[i]
               }
 
-              let headerCells = cells.filter(obj => {
+              headerCells = cells.filter(obj => {
                 return obj.gs$cell.row === "1"
               })
 
-              let headerNames = headerCells.map(a => a.content.$t)
+              headerNames = headerCells.map(a => a.content.$t)
               let testObj = {}
               for (var i = 1; i < myCellContentArr.length; i++) {
                 let curContentArray = myCellContentArr[i]
@@ -1173,8 +1659,107 @@
               return finalProjObs
             })
         }
+        //babylon
+        var canvas = document.getElementById("mainCanvas"); // Get the canvas element
+                var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
+                /******* Add the create scene function ******/
+                var createScene = function () {
+
+                    // Create the scene space
+                    var scene = new BABYLON.Scene(engine);
+                    // scene.createDefaultEnvironment();
+                    scene.clearColor = new BABYLON.Color4(0,0,0,0)
+                    // Add a camera to the scene and attach it to the canvas
+                    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
+                    // cameara.position = new BABYLON.Vector3(0,0,0)
+                      console.log(camera.position);
+                    // camera.attachControl(canvas, true);
+                    var reflectionTexture = new BABYLON.HDRCubeTexture("./textures/environment.hdr", scene, 128, false, true, false, true);
+                    // Add lights to the scene
+                    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+                    var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+
+                    // Add and manipulate meshes in the scene
+
+                    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:5}, scene);
+                    BABYLON.SceneLoader.Append("data/3D_Models/", "fence.glb", scene, function (added) {
+                      console.log('ADDED', added)
+
+                        // do something with the scene
+                        // let addedScene = added[0]
+                        // let meshes = addedScene.meshes
+                        // for (var i = 0; i < meshes.length; i++) {
+                        //   let curMesh = meshes[i]
+                          // curMesh.material = pbr2;
+                          // pbr2.metallic = 1;
+                          // pbr2.roughness = 0;
+                          // curMesh.position = new BABYLON.Vector3(0, 0, 0);
+                        // }
+                    });
+                    // var sphere = BABYLON.Mesh.CreateSphere("sphere", 3, 3, scene);
+                    // var sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
+                    // var sphere2 = BABYLON.Mesh.CreateSphere("sphere", 1, 1, scene);
+                    var pbr = new BABYLON.PBRMaterial("pbr", scene);
+                    sphere.material = pbr
+                    var gradientMaterial = new BABYLON.GradientMaterial("grad", scene);
+                    gradientMaterial.topColor = new BABYLON.Color3(0, 0, 1);
+                    gradientMaterial.bottomColor = new BABYLON.Color3(0, 0, 0);
+                    gradientMaterial.offset = 0.8;
+                     gradientMaterial.smoothness = 1;
+                   sphere.material = gradientMaterial;
+
+                    pbr.metallic = 0;
+                    pbr.roughness = 0;
+                    scene.activeCamera.attachControl(canvas, false);
+                    pbr.subSurface.isRefractionEnabled = true;
+                    pbr.subSurface.indexOfRefraction = 1.5;
+                    pbr.subSurface.tintColor = BABYLON.Color3.Teal();
+
+                    sphere.material = gradientMaterial
+
+                    return scene;
+                };
+                /******* End of the create scene function ******/
+
+                var scene = createScene(); //Call the createScene function
+
+                // Register a render loop to repeatedly render the scene
+                engine.runRenderLoop(function () {
+
+                        scene.render();
+                });
+
+                // Watch for browser/canvas resize events
+                window.addEventListener("resize", function () {
+                        engine.resize();
+                });
+
+
+        var granimInstance = new Granim({
+              element: '#gradientCanvas',
+              direction: 'top-bottom',
+              isPausedWhenNotInView: true,
+              states : {
+                  "default-state": {
+                      gradients: [
+                          ['#ff9966', '#ff5e62'],
+                          ['#00F260', '#0575E6'],
+                          ['#e1eec3', '#f05053']
+                      ]
+                  }
+              }
+          });
         // utils
+        function generateArtistLink(dObj, artistName, artistLink) {
+            generatedString = '<a' + ' target=' + '_blank' + ' ' + 'href=' + artistLink + '>' + artistName + '</a>'
+            return generatedString
+        }
+
+        function setElemAttribute(elem, attr, content) {
+          elem[attr] = content
+        }
+
         function createClassIdAppend(parentElem, htmlType, className, idName) {
 
               let testPar = parentElem
@@ -1189,9 +1774,19 @@
           }
           // </div>
 
+        function getRandomColor() {
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+
 
 
     </script>
+
     <!-- THREE TRY 1 -->
      <script>
     </script>
