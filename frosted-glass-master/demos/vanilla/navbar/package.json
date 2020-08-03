@@ -1,0 +1,18 @@
+{
+  "name": "frosted-glass-vanilla-navbar",
+  "version": "1.0.0",
+  "description": "Frosted Glass vanilla navbar",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
+  },
+  "author": "Adrian Carriger <hello@adriancarriger.com> (http://adriancarriger.com)",
+  "license": "MIT",
+  "dependencies": {
+    "frosted-glass": "next"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.6.1"
+  }
+}

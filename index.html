@@ -9,43 +9,24 @@
     <!-- <link rel="shortcut icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png"> -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/sweet-scroll/sweet-scroll.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/granim/2.0.0/granim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/ScrollMagic.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/animation.gsap.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/Draggable-latest-beta.js" charset="utf-8"></script>
-    <script src="https://.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
 
     <script src="https://cdn.babylonjs.com/babylon.js" charset="utf-8"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js" charset="utf-8"></script>
-    <script src='node_modules/frosted-glass/dist/frostedglass.js'></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.11/paper-full.min.js" charset="utf-8"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
-    <!-- <scriptsrc="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/amplitudejs@latest/dist/amplitude.min.js" charset="utf-8"></script>
-    <script src="plugins/easingScript.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r99/three.min.js"></script>
-    <script src="plugins/GLTFLoader.js"></script>
-    <script src="curtain.min.js" charset="utf-8"></script>
-    <script src="plugins/OrbitControls.js"></script>
-    <script src="plugins/hdri.js"></script>
-    <script src='plugins/RGBELoader.js'></script>
-    <script src="plugins/blotter.js" charset="utf-8"></script>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/css/lightbox.css"> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Blotter/0.1.0/materials/fliesMaterial.min.js" charset="utf-8"></script> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
-    <script src="plugins/PLYLoader.js" charset="utf-8"></script>
-    <!-- <link rel="stylesheet" type = "image/ico" href="data/> -->
+    <!-- <script src="vendors/glslCanvas.js" charset="utf-8"></script> -->
+    <!-- <script src="curtain.min.js" charset="utf-8"></script> -->
+    <script src = 'vendors/html2canvas.min.js'></script>
+    <script src = 'vendors/glslCanvas.js'></script>
+    <script src="vendors/rellax.min.js" charset="utf-8"></script>
+    <script src="plugins/easingScript.js" charset="utf-8"></script>
 
     <link rel="stylesheet" type="text/css" media="screen" href="style.css">
   </head>
-  <script src="plugins/anime.min.js"></script>
 
   <style>
     #mainBodyDiv{
@@ -53,10 +34,14 @@
       width: 100%;
       height: 100%;
       position: relative;
+      /* max-height: 100vh; */
+      /* overflow: hidden; */
+      -webkit-perspective: 800px;
+      transform: translate(0,0);
     }
     #mainCanvas{
 
-      display: none;
+      /* display: none; */
       width: 100vw;
       height: 100%;
       position: absolute;
@@ -69,10 +54,10 @@
       /* display: none; */
       width: 100vw;
       height: 100%;
-      position: absolute;
+      position: fixed;
       top: 0;
       background: transparent;
-      z-index: 0;
+      z-index: -1;
     }
     #threeCanvas{
       /* display: none; */
@@ -93,13 +78,6 @@
   <!-- player style -->
   <style>
 
-            /*
-            1. Base
-          */
-
-          /*
-            2. Components
-          */
           div#amplitude-player {
             /* background: #FFFFFF; */
             background: rgba(#ffffff, 0);
@@ -133,6 +111,7 @@
             border-right: 1px solid #CFD8DC;
             /* width: 50%; */
             display: flex;
+            /* display: none; */
             flex-direction: column; }
             div#amplitude-left img.album-art {
               width: 100%; }
@@ -794,117 +773,211 @@
               background-color: black;
               visibility: hidden;
             }
-          /*
-            4. Pages
-          */
-          /*
-            5. Themes
-          */
-          /*
-            6. Utils
-          */
-          /*
-            7. Vendors
-          */
-
-          /*# sourceMappingURL=app.css.map */
   </style>
   <!-- MY CUSTOM CLASSES -->
   <style>
-    .myGradientFill{
-          /* background: linear-gradient(270deg, #ff0000, #e1fb0f, #a958bb); */
-          background: linear-gradient(270deg, rgba(255, 0, 246, 0.45), rgba(196, 204, 110, 0.36), rgba(138, 82, 246, 0.51));
-          background-blend-mode: darken;
-          background-size: 600% 600%;
-          -webkit-animation: AnimationName 30s ease infinite;
-          -moz-animation: AnimationName 30s ease infinite;
-          animation: AnimationName 30s ease infinite;
-      }
+     .myGradientFill{
+     /* background: linear-gradient(270deg, #ff0000, #e1fb0f, #a958bb); */
+     background: linear-gradient(270deg, rgba(255, 0, 246, 0.45), rgba(196, 204, 110, 0.36), rgba(138, 82, 246, 0.51));
+     background-blend-mode: darken;
+     background-size: 600% 600%;
+     -webkit-animation: AnimationName 30s ease infinite;
+     -moz-animation: AnimationName 30s ease infinite;
+     animation: AnimationName 30s ease infinite;
+     }
 
-      @-webkit-keyframes AnimationName {
-          0%{background-position:0% 50%}
-          50%{background-position:100% 50%}
-          100%{background-position:0% 50%}
-      }
-      @-moz-keyframes AnimationName {
-          0%{background-position:0% 50%}
-          50%{background-position:100% 50%}
-          100%{background-position:0% 50%}
-      }
-      @keyframes AnimationName {
-          0%{background-position:0% 50%}
-          50%{background-position:100% 50%}
-          100%{background-position:0% 50%}
-      }
+     @-webkit-keyframes AnimationName {
+     0%{background-position:0% 50%}
+     50%{background-position:100% 50%}
+     100%{background-position:0% 50%}
+     }
+     @-moz-keyframes AnimationName {
+     0%{background-position:0% 50%}
+     50%{background-position:100% 50%}
+     100%{background-position:0% 50%}
+     }
+     @keyframes AnimationName {
+     0%{background-position:0% 50%}
+     50%{background-position:100% 50%}
+     100%{background-position:0% 50%}
+     }
 
-    .myAlbumArtClass{
-      max-width: 200px;
-    }
-    #nextButton{
-      position: fixed;
-      height: 80px;
-      width: 80px;
-      right: 10;
-      top: 50%;
-      background-color: black;
-      z-index: 2;
-    }
-    #prevButton{
-      position: fixed;
-      height: 80px;
-      width: 80px;
-      left: 10;
-      top: 50%;
-      background-color: black;
-      z-index: 2;
-    }
-    #player-left-bottom{
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-    }
-    .albumSceneContainer{
-      width: 100vw;
-      height: 100vh;
-      background-color: red;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-    .albumPlaylistContainer{
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 50vw;
-      height: 50vh;
-      margin: auto;
-      z-index: 5;
-    }
+     .myAlbumArtClass{
+     max-width: 200px;
+     }
+     .playListNav{
+     border-top: 2px solid rgba(225, 225, 225, 0.2);
+     border-left: 1px solid rgba(225, 225, 225, 0.1);
+     border-right: 1px solid rgba(225, 225, 225, 0.3);
+     box-shadow: white 0px 30px 40px -2em inset;
+     }
+     #nextButton{
+     position: fixed;
+     height: 80px;
+     width: 80px;
+     right: 50;
+     top: 50%;
+     /* background-color: black; */
+     z-index: 2;
+     }
+     #prevButton{
+     position: fixed;
+     height: 80px;
+     width: 80px;
+     left: 50;
+     top: 50%;
+     /* background-color: black; */
+     z-index: 2;
+     }
+     #player-left-bottom{
+     position: absolute;
+     bottom: 0;
+     width: 100%;
+     display: none;
+     }
+     .albumSceneContainer{
+     width: 100vw;
+     height: 100vh;
+     background-color: red;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+     }
+     .albumPlaylistContainer{
+     position: absolute;
+     top: 40%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     width: 50vw;
+     height: 50vh;
+     margin: auto;
+     z-index: 5;
+     }
 
-    #allPlaylistsContainer{
-      width: 400vw;
-      display: flex;
-      /* display: none; */
-      justify-content: space-between;
+     #allPlaylistsContainer{
+     width: 400vw;
+     display: flex;
+     /* display: none; */
+     flex-direction: column;
+     justify-content: space-between;
 
-    }
-    #logoHolder{
-      position: fixed;
-      top:0;
-      width: 100px;
-      height: 100px;
-      z-index: 5;
-    }
-    #logoHolder img{
-      width: 100%;
-    }
-    .playlistTexture{
-      display: none;
+     }
+     #logoHolder{
+     position: fixed;
+     top:0;
+     width: 100px;
+     height: 100px;
+     z-index: 5;
+     }
+     #logoHolder img{
+     width: 100%;
+     }
+     .playlistTexture{
+     display: none;
 
-    .playlistNav{
-      z-index: 106
-    }
+     }
+
+     .songProgressBackground{
+     /* width: 100%;
+     height: 100%;
+     background-color: red; */
+     width: 100%;
+     /* background-color: red; */
+     position: absolute;
+     left: -100%;
+     top: 0;
+     height: 55px;
+     overflow: hidden;
+     z-index: -1;
+     /* border-radius: 20px; */
+     }
+     .activeSongProgressBackground{
+     width: 100%;
+     position: absolute;
+     left: -100%;
+     top: 0;
+     height: 55px;
+     overflow: hidden;
+     z-index: -1;
+     animation: wave 10s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+     transform: translate3d(0, 0, 0);
+     background: url(data/svg/wave1.svg) ;
+     background-size: cover;
+     background-repeat: no-repeat;
+     anim
+     /* transition: left 10ms ease-out; */
+     }
+     .amplitude-song-container{
+     position: relative;
+     overflow: hidden;
+     transition: opacity .5s ease-out;
+     }
+     progress#song-played-progress{
+     /* display: none; */
+     }
+
+     /* .wave {
+     background: url() repeat-x;
+     position: absolute;
+     top: -198px;
+     width: 6400px;
+     height: 198px;
+     animation: wave 100s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+     transform: translate3d(0, 0, 0);
+     } */
+
+     .wave:nth-of-type(2) {
+     top: -175px;
+     animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+     opacity: 1;
+     }
+
+     @keyframes wave {
+     0% {
+     /* margin-left: 0; */
+     background-position: -10% 0%
+     -webkit-filter: hue-rotate(0deg);
+     /* top: 0 */
+     }
+     100% {
+     /* margin-left: 0; */
+     /* top: 0px; */
+     -webkit-filter: hue-rotate(350deg);
+     background-position: 10% 100%
+     }
+     }
+
+     @keyframes swell {
+     0%, 100% {
+     transform: translate3d(0,-25px,0);
+     }
+     50% {
+     transform: translate3d(0,5px,0);
+     }
+     }
+     @-webkit-keyframes hue-rotate {
+     0% {
+     -webkit-filter: hue-rotate(0deg);
+     }
+
+     100% {
+     -webkit-filter: hue-rotate(350deg);
+     }
+     }
+     #canvasContainer{
+       width: 100vw;
+       height: 100vh;
+       position: fixed;
+      z-index: 1;
+     }
+     #glslCanvas{
+       position: absolute;
+       width: 100vw;
+       height: 100vw;
+       top: 0;
+       left: 0;
+       z-index: 10;
+     }
 
   </style>
 
@@ -912,22 +985,26 @@
   <div id="logoHolder">
     <img src="logo.png" alt="">
   </div>
+  <div id="canvasContainer">
+    <canvas id="mainCanvas"></canvas>
+
+  </div>
   <div id="mainBodyDiv">
       <div id="nextButton" class = 'playListNav' onclick = 'switchPlaylist(this)'></div>
       <div id="prevButton" class = 'playListNav' onclick = 'switchPlaylist(this)'></div>
 
       <div id="allPlaylistsContainer"></div>
-        <canvas id="mainCanvas">
-        </canvas>
-        <canvas id="gradientCanvas">
-        </canvas>
-        <canvas id="threeCanvas">
 
+        <canvas id="threeCanvas">
+          <div id="capture" style="padding: 10px; background: #f5da55">
+              <h4 style="color: #000; ">Hello world!</h4>
+          <!-- </div> -->
         </canvas>
         <!-- Blue Playlist Container -->
         <img data-amplitude-song-info="cover_art_url" class="myAlbumArtClass"/>
         <!-- <div id="allPlaylistsContainer"> -->
           <div id="blue-playlist-container">
+            <progress id = 'song-played-progress'
             <div id="amplitude-player">
                 <div id="amplitude-left">
                     <div class="amplitude-visualization" id="large-visualization"></div>
@@ -939,14 +1016,13 @@
         </div>
         <!-- CONTROLS -->
         <div id="player-left-bottom">
+
           <div id="time-container">
 
                 <div id="control-container">
                     <div id="repeat-container">
-                        <div class="amplitude-repeat" id="repeat" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
                         <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
                     </div>
-
                     <div id="central-control-container">
                         <div id="central-controls">
                             <div class="amplitude-prev" id="previous" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
@@ -954,14 +1030,16 @@
                             <div class="amplitude-next" id="next" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
                         </div>
                     </div>
+                    <div id="repeat-container">
+                        <div class="amplitude-repeat" id="repeat" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                    </div>
 
-                    <div id="volume-container">
-                        <div class="volume-controls">
-                            <div class="amplitude-mute amplitude-not-muted" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
-                            <input type="range" class="amplitude-volume-slider" data-amplitude-playlist='WEIRD NXC - ACT 1'/>
-                            <div class="ms-range-fix"></div>
-                        </div>
-                        <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                </div>
+                <div id="volume-container">
+                    <div class="volume-controls">
+                        <div class="amplitude-mute amplitude-not-muted" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
+                        <input type="range" class="amplitude-volume-slider" data-amplitude-playlist='WEIRD NXC - ACT 1'/>
+                        <div class="ms-range-fix"></div>
                     </div>
                 </div>
                 <!-- <span class="current-time">
@@ -970,7 +1048,7 @@
               <div id="progress-container">
                   <div class="amplitude-wave-form" data-amplitude-playlist='WEIRD NXC - ACT 1'></div>
                   <input type="range" class="amplitude-song-slider " data-amplitude-playlist='WEIRD NXC - ACT 1'/>
-                    <progress id="song-played-progress" class="amplitude-song-played-progress" data-amplitude-playlist='WEIRD NXC - ACT 1'></progress>
+                    <!-- <progress id="song-played-progress" class="amplitude-song-played-progress" data-amplitude-playlist='WEIRD NXC - ACT 1'></progress> -->
                     <progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0" data-amplitude-playlist='WEIRD NXC - ACT 1'></progress>
                 </div>
                 <!-- <span class="duration"> -->
@@ -981,6 +1059,10 @@
 
 
         </div>
+      </div>
+    </div>
+      <canvas id="gradientCanvas"></canvas>
+      <canvas class = 'glslCanvas' data-fragment-url = 'data/shader.frag' id="glsl"></canvas>
       <!-- PAPER.JS SCRIPT -->
       <script>
         // var path;
@@ -1250,15 +1332,10 @@
         //   }
         //   });
       </script>
+
       <script>
-
-          /*
-            When the bandcamp link is pressed, stop all propagation so AmplitudeJS doesn't
-            play the song.
-          */
-
-          // document.getElementById('large-visualization').style.height = document.getElementById('album-art').offsetWidth + 'px';
-        // var realSongObjs = [];
+      // <!-- <script defer type = 'module'> -->
+        // import {initializeLights, initializeParticleSystem, dynamicCanvasMaterial, initializeCamera} from '/modules/babylonSetup.js'
         var songHTMLSections = [];
         var albumPlaylists = [];
         var playlistContainer = document.getElementById('amplitude-right')
@@ -1271,7 +1348,62 @@
         var currentPlayListIndex = 0;
         var albumObjs;
 
+        var scrollPercentage;
+
+        var activeSongContainer;
+
+        var gradientObjs = {
+          'album1': [['rgb(163, 121, 176)', 'rgb(213, 57, 140)'], ['rgb(22, 240, 249)', 'rgb(0, 255, 5)']],
+          'album2': [['rgb(135, 135, 135)', 'rgb(61, 61, 61)'], ['rgb(74, 74, 74)', 'rgb(0, 0, 0)']]
+        }
+
+        var granimInstance = new Granim({
+              element: '#gradientCanvas',
+              direction: 'top-bottom',
+              isPausedWhenNotInView: true,
+              states : {
+                  "default-state": {
+                      gradients: [
+                          ['rgb(254, 178, 58)', 'rgb(252, 93, 244)'],
+                          ['rgb(143, 87, 0)', 'rgb(126, 0, 120)']
+                      ]
+                  },
+                  '1': {
+                    gradients: [
+                        ['rgb(133, 0, 0)', 'rgb(12, 236, 0)'],
+                        ['rgb(133, 0, 0)', 'rgb(12, 236, 0)']
+                    ]
+                  },
+                  '2':{
+                    gradients: [
+                        ['rgb(252, 252, 252)', 'rgb(244, 186, 211)'],
+                        ['rgb(252, 252, 252)', 'rgb(244, 186, 211)']
+                    ]
+                  },
+                  '3':{
+                    gradients: [
+                        ['rgb(14, 14, 14)' , 'rgb(92, 92, 92)'],
+                        ['rgb(14, 14, 14)' , 'rgb(92, 92, 92)']
+                    ]
+                  },
+                  '4':{
+                    gradients: [
+                        ['rgb(254, 178, 58)', 'rgb(252, 93, 244)'],
+                        ['rgb(254, 178, 58)', 'rgb(252, 93, 244)'],
+                    ]
+                  },
+                  '5':{
+                    gradients: [
+                        ['rgb(228, 225, 225)', 'rgb(255, 255, 255)'],
+                        ['rgb(0, 255, 99)', 'rgb(0, 124, 255)'],
+                    ]
+                  }
+              }
+          });
+
         const songDataSheetURL = 'https://spreadsheets.google.com/feeds/cells/1A5fo1IWGw-XkjIqPXYb7sZfPvDIYMOv-vOwawq14ARo/1/public/full?alt=json'
+        var rellx = new Rellax('.rellax')
+        // var sandbox = new GlslCanvas(document.querySelector('#glslCanvas'))
 
         var songDataObjs = generateObjectFromSpreadData(songDataSheetURL).then(function(returnData){
             songDataObjs = returnData;
@@ -1279,15 +1411,96 @@
             let uniqueAlbumNames = albumNameColumn.filter(onlyUnique)
             let testName = uniqueAlbumNames[0]
             let testGroup = groupBy(songDataObjs, obj => obj.album)
+            var progressArray = []
+            let referenceProgressBar = document.getElementById('song-played-progress');
+            console.log('REFERENCEPROGRESSBAR', referenceProgressBar)
             albumObjs =  makeAlbumObjs(testGroup, document.querySelector('#allPlaylistsContainer'))
+
             amplitudeDataObjs = generateAmpltiudeDataObjArray(albumObjs)
-            console.log(JSON.stringify(amplitudeDataObjs));
-            testTest(amplitudeDataObjs)
             // console.log('AMPLITUDEDATAOBJS', amplitudeDataObjs)
-            // testTest(amplitudeDataObjs)
-            // Amplitude.init(amplitudeDataObjs)
+            amplitudeDataObjs.callbacks = {
+              play: function(e){
+                let activeSongMetaData = Amplitude.getActiveSongMetadata()
+                let activeSongIndex = activeSongMetaData.index
+                let activeBackgroundProgressBar = document.getElementById('songProgressBackground_'+activeSongIndex);
+                let referenceProgressBar = document.getElementById('song-played-progress');
+                progressArray.push(activeBackgroundProgressBar)
+                // $(activeBackgroundProgressBar).animate({'left': '-90%'}, 1000, 'easeOutCirc', function(){
+                //   console.log('finished aniamte ');
+                // })
+                setInterval(function(){
+                  // let referenceProgressBar = document.getElementById('song-played-progress');
+                  let percentage = convertToPercentage(referenceProgressBar.value, -90)
+                    $(activeBackgroundProgressBar).css('left', percentage )
+                }, 50)
+
+                if (progressArray.length > 1){
+                  $(progressArray[0]).removeClass('activeSongProgressBackground')
+                  $(progressArray[1]).addClass('activeSongProgressBackground')
+
+                  progressArray = progressArray.slice(1)
+                  // setInterval(function(){
+                  //   // let referenceProgressBar = document.getElementById('song-played-progress');
+                  //   let percentage = convertToPercentage(referenceProgressBar.value, -90)
+                  //     $(progressArray[1]).css('left', percentage )
+                  //     // console.log('PERCENTAGE', percentage)
+                  // }, 50 )
+                } else {
+                  activeBackgroundProgressBar.addClass('activeSongProgressBackground')
+                    setInterval(function(){
+                        // let referenceProgressBar = document.getElementById('song-played-progress');
+                      console.log(referenceProgressBar.value);
+                      let percentage = convertToPercentage(referenceProgressBar.value, -90)
+                      $(activeBackgroundProgressBar).css('left', percentage )
+                      // console.log('PERCENTAGE', percentage)
+                    }, 50 )
+                }
+
+
+
+
+
+
+              }
+            }
+            amplitudeSetup(amplitudeDataObjs)
 
         });
+
+        window.onscroll = function(){
+          scrollPercentage = _get_scroll_percentage()
+          console.log(granimInstance.state);
+          let intervalArray = percentageRanges(4)
+          console.log('INTERVALARRAY', intervalArray)
+
+          // if (scrollPercentage>30) {
+          let stateToSet = determineNewGradient(scrollPercentage, intervalArray)
+          granimInstance.changeState(stateToSet)
+          // }
+          console.log('SCROLLPERCENTAGE', scrollPercentage)
+        }
+        function determineNewGradient(theScrollPercentage, valueArr){
+          return theScrollPercentage < valueArr[0] ? '1':
+                 theScrollPercentage < valueArr[1] ? '2':
+                 theScrollPercentage < valueArr[2] ? '3':
+                 theScrollPercentage < valueArr[3] ? '4': '5';
+                 // theScrollPercentage < valueArr[4] ? '4'
+                 // ;
+        }
+        function percentageRanges(numberOfElements){
+          let interval = 100/numberOfElements
+          let intervalArray = []
+          for (var i = 0; i < numberOfElements; i++) {
+            let intervalMult = i*interval
+            intervalArray.push(intervalMult)
+          }
+          return intervalArray
+        }
+
+        function convertToPercentage(val, start){
+          let percentage = (start + (val*100)) + '%'
+          return percentage
+        }
 
         function switchPlaylist(e){
           console.log('CLIKED ID', e.id);
@@ -1298,7 +1511,8 @@
           }
           currentAlbumObj = albumObjs[currentPlayListIndex]
           // toScrollTo = currentAlbumObj.albumSceneContainer.
-          toScrollTo = albumObjs[currentPlayListIndex].albumPlaylistContainer
+          toScrollTo = albumObjs[currentPlayListIndex].albumPlaylistContainer.parentNode
+          console.log(albumObjs);
           // console.log('TOSCROLLTO', toScrollTo)
           // $('.leftArrow').click(function(event){
             // event.preventDefault();
@@ -1307,7 +1521,7 @@
           // console.log(currentPlayListIndex);
             $('body').scrollTo(toScrollTo, 500, {
               axis: 'x',
-              margin: true
+              margin: false
           })
         }
 
@@ -1334,14 +1548,14 @@
             let curTempAlbumData = array[i]
             let albumSceneContainer = createClassIdAppend(parentElem, 'div', 'albumSceneContainer', 'albumSceneContainer_'+i)
             let playlistContainer = createClassIdAppend(albumSceneContainer, 'div', 'albumPlaylistContainer amplitudeRight', 'albumPlaylistContainer_'+i)
+            let progressBar = createClassIdAppend(playlistContainer, 'progress', 'amplitude-song-played-progress', 'song-played-progress')
+            progressBar.setAttribute('data-amplitude-playlist', 'WEIRD NXC - ACT 1')
             // let playlistTexture = createClassIdAppend(playlistContainer, 'img', 'playlistTexture')
             // setElemAttribute(playlistTexture, 'src', 'data/textures/glasstexture1.png')
             let albumPlaylist = generatePlaylist(playlistContainer, curTempAlbumData)
-            // let randomColor = getRandomColor()
             let randomColor2 = getRandomColor()
             $(playlistContainer).css('background-color', 'rgba(255, 255, 255, 0)')
-            $(albumSceneContainer).css('background-color', randomColor2)
-
+            $(albumSceneContainer).css('background-color', 'rgba(255, 255, 255, 0)')
             let albumObj = {
               'albumName': curTempAlbumData[0],
               'albumSongObjs': curTempAlbumData[1],
@@ -1386,7 +1600,6 @@
           let nowPlaying = createClassIdAppend(songNowPlayingIconContainer, 'img', 'now-playing', 'nowPlaying_'+index)
 
           let songMetaData = createClassIdAppend(songContainer, 'div', 'song-meta-data', 'songMetaData_'+index)
-          // let songTitle = createClassIdAppend(songMetaData, 'span', 'song-title', 'songTitle_'+index)
           let songTitle = createClassIdAppend(songMetaData, 'a', 'song-title', 'songTitle_'+index)
           let songArist = createClassIdAppend(songMetaData, 'span', 'song-artist', 'songArist_'+index)
 
@@ -1396,6 +1609,8 @@
 
           let songDuration = createClassIdAppend(songContainer, 'span', 'song-duration', 'songDuration_'+index)
 
+          let songProgressBackground = createClassIdAppend(songContainer, 'div', 'songProgressBackground', 'songProgressBackground_'+index)
+          // $(songProgressBackground).toggleClass('songProgressBackground')
           let songContainerObj = {
              'songContainer':songContainer,
              'songNowPlayingIconContainer': songNowPlayingIconContainer,
@@ -1447,7 +1662,6 @@
         // 04%20%E3%80%8C%20P%20H%20Y%20S%20A%20%E3%80%8D%20-%20w0nd3rful.mp3
 
         function generateAmpltiudeDataObjArray(albums){
-          // console.log('ALBUMS', albums)
          var playListObj = {}
          let testFinal = {}
 
@@ -1480,13 +1694,11 @@
                testFinal.playlists = playListObj
 
            }
-       console.log('TESTFINAL', testFinal)
           // finalAmplitudeObj.playlists = playListObj
           return testFinal
         }
 
-
-        function testTest(dataObjs){
+        function amplitudeSetup(dataObjs){
           let bandcampLinks = document.getElementsByClassName('bandcamp-link');
 
           for( var i = 0; i < bandcampLinks.length; i++ ){
@@ -1497,7 +1709,6 @@
 
 
           let songElements = document.getElementsByClassName('song');
-          // console.log(songElements);
 
           for( var i = 0; i < songElements.length; i++ ){
             /*
@@ -1507,7 +1718,6 @@
             songElements[i].addEventListener('mouseover', function(){
                 // this.style.backgroundColor = '#00A0FF';
                 // console.log(i);
-                    console.log('SONGELEMENTS[I]', songElements[i])
                 // console.log('got hovered');
                 $(this).toggleClass('myGradientFill')
                 this.querySelectorAll('.song-meta-data .song-title')[0].style.color = '#FFFFFF';
@@ -1521,6 +1731,9 @@
                 this.querySelectorAll('img.bandcamp-white')[0].style.display = 'block';
                 this.querySelectorAll('.song-duration')[0].style.color = '#FFFFFF';
             });
+              // console.log(e);
+              // console.log(this);
+            // });
 
 
             /*
@@ -1549,10 +1762,9 @@
             Initializes AmplitudeJS
           */
           Amplitude.init(dataObjs)
-          }
+        }
 
         function generatePlaylist(parentElem, albumDataArray) {
-          // console.log(parentElem);
           let albumSongArray = albumDataArray[1]
           let albumName = albumDataArray[0]
           for (var i = 0; i < albumSongArray.length; i++) {
@@ -1660,96 +1872,242 @@
             })
         }
         //babylon
+        function positionObjects(objects, position){
+
+        }
+        function initializeLights(myScene){
+          var reflectionTexture = new BABYLON.HDRCubeTexture("./textures/environment.hdr", myScene, 128, false, true, false, true);
+          var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), myScene);
+          var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), myScene);
+        }
+
+        function initializeParticleSystem(myScene, size, emitRate){
+
+          var particleSystem = new BABYLON.ParticleSystem("particles", 10000, scene);
+
+          particleSystem.particleTexture = new BABYLON.Texture("data/textures/cloudTest.png", scene);
+          particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+          particleSystem.addDragGradient(0, 0.5)
+          particleSystem.minLifetime = 0.3;
+          particleSystem.maxLifeTime = 400;
+          particleSystem.addSizeGradient(10.0, 1);
+          // particleSystem.minSize = 0.00001;
+          // particleSystem.maxSize = 0.001;
+          particleSystem.minSize = 1;
+          particleSystem.maxSize = 10;
+          particleSystem.minEmitPower = 1;
+          particleSystem.maxEmitPower = 10;
+          // particleSystem.addStartSizeGradient(0, 2);
+          // particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_MULTIPLY;
+          // particleSystem.emitRate = emitRate
+          particleSystem.emitter = new BABYLON.Vector3(0, -15, 0); // the starting object, the emitter
+          particleSystem.minEmitBox = new BABYLON.Vector3(-1*size, -1*size, -1*size); // Starting all from
+          particleSystem.maxEmitBox = new BABYLON.Vector3(size, size, size); // To...
+          particleSystem.start();
+        }
+
+        function dynamicCanvasMaterial(canvasSourceElement, myScene ) {
+          var texture = new BABYLON.DynamicTexture("dynamic texture", canvasSourceElement, scene);
+          var textureContext = texture.getContext('2d');
+          var mat = new BABYLON.StandardMaterial("mat", myScene);
+          mat.emissiveTexture = texture;
+          setInterval(function(){
+            texture.update()
+          }, 10)
+          return mat;
+        }
+
+        function initializeCamera(myScene, enableArc) {
+          if (enableArc == true) {
+              var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), myScene);
+          } else {
+              var camera = new BABYLON.UniversalCamera("Camera", new BABYLON.Vector3(0,0,5), myScene);
+              camera.setTarget(BABYLON.Vector3.Zero());
+          }
+
+
+          var lensEffect = new BABYLON.LensRenderingPipeline('lens', {
+              // edge_blur: 1.0,
+              // chromatic_aberration: .1,
+              // distortion: 1.0,
+              // dof_focus_distance: 6,
+              // dof_aperture: 6.0,			// set this very high for tilt-shift effect
+              // grain_amount: 0.1,
+              // dof_pentagon: true,
+              // dof_gain: 1.0,
+              // dof_threshold: 1,
+              // dof_threshold: .1,
+              // dof_darken: 0.25
+            }, myScene, 1.0, camera
+          );
+          return camera;
+        }
+
+        function generateSphere(myScene, options, material){
+          let generatedSphere = BABYLON.MeshBuilder.CreateSphere("sphere", options, myScene);
+          generatedSphere.material = material;
+          return generatedSphere;
+        }
+
+        function generateAnimation(obj, myScene){
+              var animationTorus = new BABYLON.Animation("torusEasingAnimation", "position", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+              // let startPos = obj.position
+              // the torus destination position
+              var nextPos = obj.position.add(new BABYLON.Vector3(0, 2, 0));
+
+              // Animation keys
+              var keysTorus = [];
+              keysTorus.push({ frame: 0, value: obj.position });
+              keysTorus.push({ frame: 120, value: nextPos });
+              keysTorus.push({ frame: 200, value: obj.position });
+              animationTorus.setKeys(keysTorus);
+
+              // Adding an easing function
+              // You can use :
+              //1.	CircleEase()
+              //2.	BackEase(amplitude)
+              //3.	BounceEase(bounces, bounciness)
+              //4.	CubicEase()
+              //5.	ElasticEase(oscillations, springiness)
+              //6.	ExponentialEase(exponent)
+              //7.	PowerEase(power)
+              //8.	QuadraticEase()
+              //9.	QuarticEase()
+              //10.	QuinticEase()
+              //11.	SineEase()
+              // And if you want a total control, you can use a Bezier Curve animation
+              //12.   BezierCurveEase(x1, y1, x2, y2)
+              var easingFunction = new BABYLON.CircleEase();
+
+              // For each easing function, you can choose beetween EASEIN (default), EASEOUT, EASEINOUT
+              easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+              // Adding easing function to my animation
+              animationTorus.setEasingFunction(easingFunction);
+
+              // Adding animation to my torus animations collection
+              obj.animations.push(animationTorus);
+
+              //Finally, launch animations on torus, from key 0 to key 120 with loop activated
+              myScene.beginAnimation(obj, 0, 200, true);
+        }
+
+        function setSceneCameraToGlbCamera(glb, myScene){
+          let testCam = glb.cameras[0]
+          myScene.activeCamera = testCam;
+        }
+
+        function assignColor(obj, color, myScene){
+           let toAssignMat = new BABYLON.StandardMaterial('matName', myScene)
+           toAssignMat.diffuseColor = new BABYLON.Color3(color)
+           obj.material = toAssignMat
+
+        }
+
+        function attachPointerDragBehavior(obj, myHighlightLayer){
+          console.log('OBJ', obj)
+          let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragAxis: new BABYLON.Vector3(0,1,0)});
+          // let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragAxis: new BABYLON.Vector3(1,0,1)});
+          // let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(1,0,1)});
+          // let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(0,1,1)});
+          // let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(1,1,0)});
+          // let pointerDragBehaviorToAdd = new BABYLON.PointerDragBehavior({dragAxis: new BABYLON.Vector3(0,1,1)});
+          pointerDragBehaviorToAdd.useObjectOrienationForDragging = false;
+         pointerDragBehaviorToAdd.moveAttached = false;
+          // Use drag plane in world space
+          pointerDragBehaviorToAdd.useObjectOrientationForDragging = false;
+
+          //START
+          pointerDragBehaviorToAdd.onDragStartObservable.add((event)=>{
+              myHighlightLayer.addMesh(obj, BABYLON.Color3.Green());
+          })
+
+          //DRAG
+          pointerDragBehaviorToAdd.onDragObservable.add((event)=>{
+              obj.position.x += event.delta.x
+              obj.position.y += event.delta.y
+              obj.position.z += event.delta.z
+          })
+          //END
+          pointerDragBehaviorToAdd.onDragEndObservable.add((event)=>{
+              myHighlightLayer.removeMesh(obj)
+          })
+          obj.addBehavior(pointerDragBehaviorToAdd)
+
+        }
+
         var canvas = document.getElementById("mainCanvas"); // Get the canvas element
                 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
                 /******* Add the create scene function ******/
                 var createScene = function () {
-
-                    // Create the scene space
+                    var pbS = 10;
                     var scene = new BABYLON.Scene(engine);
-                    // scene.createDefaultEnvironment();
-                    scene.clearColor = new BABYLON.Color4(0,0,0,0)
-                    // Add a camera to the scene and attach it to the canvas
-                    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
-                    // cameara.position = new BABYLON.Vector3(0,0,0)
-                      console.log(camera.position);
-                    // camera.attachControl(canvas, true);
-                    var reflectionTexture = new BABYLON.HDRCubeTexture("./textures/environment.hdr", scene, 128, false, true, false, true);
-                    // Add lights to the scene
-                    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
-                    var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+                     var hl = new BABYLON.HighlightLayer("hl1", scene);
+                    var camera = initializeCamera(scene, true)
+                    initializeLights(scene)
+                    // initializeParticleSystem(scene, 5, 1000)
+                    // canvasGradientMaterial = dynamicCanvasMaterial(document.getElementById('gradientCanvas'), scene)
 
-                    // Add and manipulate meshes in the scene
+                    var testObj;
+                    let testSphere = generateSphere(scene, {diameter: 2})
+                    testSphere.position = new BABYLON.Vector3(0,3,0)
+                    attachPointerDragBehavior(testSphere)
+                    assignColor(testSphere, '(1,1,1)', scene)
+                    // generateAnimation(testSphere, scene)
 
-                    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:5}, scene);
-                    BABYLON.SceneLoader.Append("data/3D_Models/", "fence.glb", scene, function (added) {
-                      console.log('ADDED', added)
+                    // var backgroundPlane = BABYLON.MeshBuilder.CreatePlane("plane", {height:10, width: 10}, scene);
+                    // var backgroundPlane = BABYLON.MeshBuilder.CreatePlane("plane", {height:1, width: 1}, scene);
+                    // backgroundPlane.material = canvasGradientMaterial
+                    // backgroundPlane.material = blackMat
+                    // var backgroundPlane;
 
-                        // do something with the scene
-                        // let addedScene = added[0]
-                        // let meshes = addedScene.meshes
-                        // for (var i = 0; i < meshes.length; i++) {
-                        //   let curMesh = meshes[i]
-                          // curMesh.material = pbr2;
-                          // pbr2.metallic = 1;
-                          // pbr2.roughness = 0;
-                          // curMesh.position = new BABYLON.Vector3(0, 0, 0);
-                        // }
+                    // var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:5}, scene);
+                    // BABYLON.SceneLoader.Append("data/3D_Models/", "fence.glb", scene, function (added) {
+
+                    BABYLON.SceneLoader.Append("data/3D_Models/", "testScene1.glb", scene, function (added) {
+                      // console.log('ADDED', added)
+                      testObj = added.meshes[2]
+
+                      for (var i = 0; i < added.meshes.length; i++) {
+                      }
+                      setSceneCameraToGlbCamera(added, scene)
+                      assignColor(testObj, '(1,0,1)', scene)
+
                     });
-                    // var sphere = BABYLON.Mesh.CreateSphere("sphere", 3, 3, scene);
-                    // var sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
-                    // var sphere2 = BABYLON.Mesh.CreateSphere("sphere", 1, 1, scene);
-                    var pbr = new BABYLON.PBRMaterial("pbr", scene);
-                    sphere.material = pbr
-                    var gradientMaterial = new BABYLON.GradientMaterial("grad", scene);
-                    gradientMaterial.topColor = new BABYLON.Color3(0, 0, 1);
-                    gradientMaterial.bottomColor = new BABYLON.Color3(0, 0, 0);
-                    gradientMaterial.offset = 0.8;
-                     gradientMaterial.smoothness = 1;
-                   sphere.material = gradientMaterial;
 
-                    pbr.metallic = 0;
-                    pbr.roughness = 0;
-                    scene.activeCamera.attachControl(canvas, false);
-                    pbr.subSurface.isRefractionEnabled = true;
-                    pbr.subSurface.indexOfRefraction = 1.5;
-                    pbr.subSurface.tintColor = BABYLON.Color3.Teal();
+                    document.querySelector('#mainCanvas').addEventListener('click', function(evt){
+                      var pickResult = scene.pick(evt.clientX, evt.clientY);
+                      if (pickResult.hit == false) {
+                        // $($)
+                      } else {
+                        // console.log('PICKRESULT', pickResult)
+                        let curPickedMesh = pickResult.pickedMesh;
+                        attachPointerDragBehavior(curPickedMesh, hl)
+                      }
 
-                    sphere.material = gradientMaterial
+                      // console.log(pickResult);
+                    });
 
+                    scene.clearColor = new BABYLON.Color4(0,0,0,0)
                     return scene;
                 };
-                /******* End of the create scene function ******/
 
                 var scene = createScene(); //Call the createScene function
 
-                // Register a render loop to repeatedly render the scene
                 engine.runRenderLoop(function () {
 
-                        scene.render();
+                    scene.render();
                 });
+                function controlOffset(){
 
+                }
                 // Watch for browser/canvas resize events
                 window.addEventListener("resize", function () {
                         engine.resize();
                 });
 
 
-        var granimInstance = new Granim({
-              element: '#gradientCanvas',
-              direction: 'top-bottom',
-              isPausedWhenNotInView: true,
-              states : {
-                  "default-state": {
-                      gradients: [
-                          ['#ff9966', '#ff5e62'],
-                          ['#00F260', '#0575E6'],
-                          ['#e1eec3', '#f05053']
-                      ]
-                  }
-              }
-          });
         // utils
         function generateArtistLink(dObj, artistName, artistLink) {
             generatedString = '<a' + ' target=' + '_blank' + ' ' + 'href=' + artistLink + '>' + artistName + '</a>'
@@ -1783,15 +2141,64 @@
           return color;
         }
 
+        $(document).ready(function() {
+            $.ajax({
+                url: "main.js",
+                dataType: "script",
+                cache: true
+            });
+        });
 
 
     </script>
 
-    <!-- THREE TRY 1 -->
-     <script>
+    <!-- GET SCROLL PERCENTAGE -->
+    <script>
+      /**
+       * Get current browser viewpane heigtht
+       */
+       function _get_window_height() {
+          return window.innerHeight ||
+                 document.documentElement.clientHeight ||
+                 document.body.clientHeight || 0;
+       }
+      /**
+       * Get current absolute window scroll position
+       */
+       function _get_window_Yscroll() {
+          return window.pageYOffset ||
+                 document.body.scrollTop ||
+                 document.documentElement.scrollTop || 0;
+      }
+      /**
+       * Get current absolute document height
+       */
+       function _get_doc_height() {
+          return Math.max(
+              document.body.scrollHeight || 0,
+              document.documentElement.scrollHeight || 0,
+              document.body.offsetHeight || 0,
+              document.documentElement.offsetHeight || 0,
+              document.body.clientHeight || 0,
+              document.documentElement.clientHeight || 0
+          );
+      }
+      /**
+       * Get current vertical scroll percentage
+       */
+       // var testPercentage;
+       function _get_scroll_percentage() {
+
+          return (
+              (_get_window_Yscroll() + _get_window_height()) / _get_doc_height()
+          ) * 100;
+       }
+
+
+
     </script>
 
-
+      <!-- <script type = 'module' src = 'main.js'></script> -->
   </body>
 
   </html>
